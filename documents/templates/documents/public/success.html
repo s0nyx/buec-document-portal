@@ -1,0 +1,26 @@
+{% extends 'documents/base.html' %}
+{% block title %}Document received | {{ brand_short_name }}{% endblock %}
+{% block body_class %}site-body public-shell centered-shell{% endblock %}
+{% block body %}
+<header class="public-header">
+    {% include 'documents/public/_brand.html' %}
+    <span class="secure-pill"><span class="secure-dot"></span> Submission complete</span>
+</header>
+<main class="public-main centered-main">
+    <section class="public-card result-card">
+        <div class="result-icon success-icon" aria-hidden="true">&#10003;</div>
+        <div class="eyebrow">Upload successful</div>
+        <h1>Thank you. We received your document.</h1>
+        <p class="lead">A confirmation email is on its way. Our team will review the document and contact you only if anything else is needed.</p>
+        <div class="info-panel">
+            <span class="info-icon" aria-hidden="true">i</span>
+            <p>The upload link has now been closed. You may safely close this page.</p>
+        </div>
+        <a class="button button-secondary" href="{% url 'home' %}">Return to document portal</a>
+    </section>
+</main>
+<footer class="public-footer">
+    <span>&copy; {% now 'Y' %} {{ brand_name }}</span>
+    <span><a href="mailto:{{ support_email }}">{{ support_email }}</a></span>
+</footer>
+{% endblock %}

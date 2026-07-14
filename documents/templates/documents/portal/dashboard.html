@@ -1,0 +1,97 @@
+{% extends 'documents/base.html' %}
+{% load static %}
+{% block title %}Document requests | {{ brand_short_name }}{% endblock %}
+{% block body_class %}site-body admin-shell{% endblock %}
+{% block body %}
+<header class="admin-header">
+    <div class="brand-lockup admin-brand">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy"><strong>{{ brand_short_name }}</strong><small>Document Operations</small></span>
+    </div>
+    <div class="admin-user">
+        <div class="user-avatar" aria-hidden="true">{{ request.user.username|first|upper }}</div>
+        <div class="user-copy"><strong>{{ request.user.get_full_name|default:request.user.username }}</strong><span>Superuser</span></div>
+        <form method="post" action="{% url 'portal:logout' %}">{% csrf_token %}<button class="icon-button" type="submit" title="Sign out" aria-label="Sign out">&#8594;</button></form>
+    </div>
+</header>
+<main class="admin-main">
+    <div class="admin-intro">
+        <div><span class="eyebrow">Missing documents</span><h1>Document requests</h1><p>Create secure requests and track every submission from one place.</p></div>
+        <button class="button button-primary" type="button" data-open-modal><span aria-hidden="true">+</span><span>New document request</span></button>
+    </div>
+
+    {% if messages %}
+        <div class="message-stack" aria-live="polite">
+            {% for message in messages %}<div class="message message-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="stats-grid" aria-label="Request summary">
+        <article class="stat-card"><span class="stat-label">Pending student</span><strong>{{ stats.pending }}</strong><small>Waiting for upload</small></article>
+        <article class="stat-card stat-card-action"><span class="stat-label">Action required</span><strong>{{ stats.action }}</strong><small>Documents to review</small></article>
+        <article class="stat-card"><span class="stat-label">Completed</span><strong>{{ stats.completed }}</strong><small>Reviewed requests</small></article>
+        <article class="stat-card"><span class="stat-label">All requests</span><strong>{{ stats.total }}</strong><small>Lifetime total</small></article>
+    </section>
+
+    <section class="requests-panel">
+        <div class="requests-toolbar">
+            <div class="search-box">
+                <span aria-hidden="true">&#9906;</span>
+                <label class="sr-only" for="request-search">Search name or email</label>
+                <input id="request-search" type="search" value="{{ query }}" placeholder="Search by student name or email" autocomplete="off" data-request-search>
+            </div>
+            <div class="filter-group" role="group" aria-label="Filter requests">
+                <button type="button" class="filter-button {% if status_filter == 'all' %}is-active{% endif %}" data-status-filter="all">All</button>
+                <button type="button" class="filter-button {% if status_filter == 'pending' %}is-active{% endif %}" data-status-filter="pending">Pending</button>
+                <button type="button" class="filter-button {% if status_filter == 'action' %}is-active{% endif %}" data-status-filter="action">Action</button>
+                <button type="button" class="filter-button {% if status_filter == 'completed' %}is-active{% endif %}" data-status-filter="completed">Completed</button>
+                <button type="button" class="filter-button {% if status_filter == 'expired' %}is-active{% endif %}" data-status-filter="expired">Expired</button>
+            </div>
+        </div>
+        <div id="requests-table" data-table-url="{% url 'portal:request-table' %}" aria-live="polite">
+            {% include 'documents/portal/_request_table.html' %}
+        </div>
+    </section>
+</main>
+
+<div class="modal-backdrop" data-modal hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="new-request-title">
+        <div class="modal-header">
+            <div><span class="eyebrow">Secure upload request</span><h2 id="new-request-title">Request a document</h2></div>
+            <button class="modal-close" type="button" data-close-modal aria-label="Close dialog">&times;</button>
+        </div>
+        <form method="post" action="{% url 'portal:request-create' %}" class="modal-form" data-new-request-form novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group form-span-2">
+                    <label for="{{ new_request_form.student_name.id_for_label }}">Student name</label>
+                    {{ new_request_form.student_name }}
+                    <div class="field-error" data-error-for="student_name"></div>
+                </div>
+                <div class="form-group form-span-2">
+                    <label for="{{ new_request_form.student_email.id_for_label }}">Student email</label>
+                    {{ new_request_form.student_email }}
+                    <div class="field-error" data-error-for="student_email"></div>
+                </div>
+                <div class="form-group form-span-2">
+                    <label for="{{ new_request_form.document_type.id_for_label }}">Document type</label>
+                    {{ new_request_form.document_type }}
+                    <div class="field-error" data-error-for="document_type"></div>
+                </div>
+                <div class="form-group form-span-2 other-document-group" data-other-document-group hidden>
+                    <label for="{{ new_request_form.other_document_name.id_for_label }}">Document description <span>Optional</span></label>
+                    {{ new_request_form.other_document_name }}
+                    <div class="field-error" data-error-for="other_document_name"></div>
+                </div>
+            </div>
+            <div class="modal-note"><span aria-hidden="true">i</span><p>The student will receive a branded email with a unique link valid for {{ upload_token_lifetime_days }} days. The link closes immediately after upload.</p></div>
+            <div class="form-alert" data-form-alert hidden></div>
+            <div class="modal-actions">
+                <button class="button button-ghost" type="button" data-close-modal>Cancel</button>
+                <button class="button button-primary" type="submit" data-create-submit><span>Send request</span><span aria-hidden="true">&#8594;</span></button>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'documents/js/dashboard.js' %}" defer></script>{% endblock %}

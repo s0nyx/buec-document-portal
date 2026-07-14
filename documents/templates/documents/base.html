@@ -1,0 +1,17 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+    <meta name="referrer" content="no-referrer">
+    <title>{% block title %}{{ brand_short_name }} Document Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'documents/css/app.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}site-body{% endblock %}">
+    {% block body %}{% endblock %}
+    {% block scripts %}{% endblock %}
+</body>
+</html>

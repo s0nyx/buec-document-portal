@@ -1,0 +1,8 @@
+Dear {{ request_item.student_name }},
+
+Your {{ document_label }} was received successfully by {{ brand_name }}.
+
+Our team will review it and contact you only if anything else is needed. The upload link is now closed and no further action is required.
+
+Kind regards,
+{{ brand_short_name }} Document Team

@@ -1,0 +1,70 @@
+{% extends 'documents/base.html' %}
+{% load static %}
+{% block title %}Upload {{ request_item.document_label }} | {{ brand_short_name }}{% endblock %}
+{% block body_class %}site-body public-shell{% endblock %}
+{% block body %}
+<header class="public-header">
+    {% include 'documents/public/_brand.html' %}
+    <span class="secure-pill"><span class="secure-dot"></span> Encrypted upload</span>
+</header>
+<main class="public-main upload-layout">
+    <section class="public-card upload-card">
+        <div class="eyebrow">Action required</div>
+        <h1>Upload your requested document</h1>
+        <p class="lead">Dear {{ request_item.student_name }}, please submit the document below so our team can continue processing your application.</p>
+
+        <div class="request-summary">
+            <span>Requested document</span>
+            <strong>{{ request_item.document_label }}</strong>
+            <small>This link expires {{ request_item.expires_at|date:'j F Y, H:i T' }} and closes after one successful upload.</small>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="upload-form" data-upload-form novalidate>
+            {% csrf_token %}
+            {{ form.website }}
+            {% if form.non_field_errors %}
+                <div class="form-alert" role="alert">{{ form.non_field_errors|striptags }}</div>
+            {% endif %}
+            <div class="dropzone" data-dropzone>
+                <div class="dropzone-icon" aria-hidden="true">&#8593;</div>
+                <h2>Drop your file here</h2>
+                <p>or choose it from your device</p>
+                <label class="button button-secondary" for="{{ form.document.id_for_label }}">Choose document</label>
+                {{ form.document }}
+                <div class="selected-file" data-selected-file aria-live="polite">No file selected</div>
+            </div>
+            {% if form.document.errors %}
+                <div class="field-error" role="alert">{{ form.document.errors|striptags }}</div>
+            {% endif %}
+            <div class="upload-meta">
+                <span>JPG, JPEG, PNG, WEBP, HEIC, HEIF, TIFF, PDF, DOCX, ODT, RTF or TXT</span>
+                <span>Maximum {{ max_upload_size_mb }} MB</span>
+            </div>
+            <button class="button button-primary button-full" type="submit" data-submit-button>
+                <span>Upload requested document</span>
+                <span aria-hidden="true">&#8594;</span>
+            </button>
+            <p class="privacy-note">By uploading, you confirm this document belongs to you or you are authorised to provide it. Files are never made publicly accessible.</p>
+        </form>
+    </section>
+
+    <aside class="security-card">
+        <div class="security-emblem" aria-hidden="true">&#10003;</div>
+        <h2>Your document is protected</h2>
+        <ul class="security-list">
+            <li><strong>Encrypted at rest</strong><span>The stored file cannot be read without the server-side encryption key.</span></li>
+            <li><strong>Validated before storage</strong><span>File type, structure and size are checked on the server.</span></li>
+            <li><strong>Restricted download</strong><span>The document is delivered as an attachment only to authorised portal users.</span></li>
+        </ul>
+        <div class="help-box">
+            <strong>Having trouble?</strong>
+            <span>Email <a href="mailto:{{ support_email }}">{{ support_email }}</a>{% if support_phone %} or call {{ support_phone }}{% endif %}.</span>
+        </div>
+    </aside>
+</main>
+<footer class="public-footer">
+    <span>&copy; {% now 'Y' %} {{ brand_name }}</span>
+    <span>Secure document portal</span>
+</footer>
+{% endblock %}
+{% block scripts %}<script src="{% static 'documents/js/upload.js' %}" defer></script>{% endblock %}

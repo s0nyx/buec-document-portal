@@ -1,0 +1,38 @@
+# Example reverse proxy. Terminate TLS on this server and replace the domain.
+upstream buec_document_portal {
+    server 127.0.0.1:8000;
+    keepalive 16;
+}
+
+server {
+    listen 80;
+    server_name documents.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name documents.example.com;
+
+    # Add your certificate directives here.
+    # ssl_certificate /etc/letsencrypt/live/documents.example.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/documents.example.com/privkey.pem;
+
+    client_max_body_size 21m;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_read_timeout 65s;
+
+    # Upload tokens are secrets. Do not record these request paths in access logs.
+    location ^~ /upload/ {
+        access_log off;
+        proxy_pass http://buec_document_portal;
+    }
+
+    location / {
+        proxy_pass http://buec_document_portal;
+    }
+}

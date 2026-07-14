@@ -1,0 +1,54 @@
+<div class="table-wrap">
+<table class="requests-table">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Requested document</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Owner</th>
+            <th class="actions-heading">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in page_obj %}
+        <tr>
+            <td data-label="Student">
+                <div class="student-cell"><span class="table-avatar">{{ item.student_name|first|upper }}</span><span><strong>{{ item.student_name }}</strong><small>{{ item.student_email }}</small></span></div>
+            </td>
+            <td data-label="Requested document">
+                <strong class="document-name">{{ item.document_label }}</strong>
+                <small class="email-state email-{{ item.email_status }}">Email: {{ item.get_email_status_display }}</small>
+            </td>
+            <td data-label="Status"><span class="status-badge status-{{ item.status }}"><span></span>{{ item.get_status_display }}</span></td>
+            <td data-label="Created"><strong>{{ item.created_at|date:'d M Y' }}</strong><small>{{ item.created_at|date:'H:i' }}</small></td>
+            <td data-label="Owner"><strong>{{ item.requested_by.get_full_name|default:item.requested_by.username|default:'Former user' }}</strong><small>Portal user</small></td>
+            <td data-label="Actions" class="table-actions">
+                {% if item.status == 'action' %}
+                    <a class="table-button table-button-primary" href="{% url 'portal:request-download' item.pk %}">Download</a>
+                    <form method="post" action="{% url 'portal:request-complete' item.pk %}">{% csrf_token %}<button class="table-button" type="submit">Complete</button></form>
+                {% elif item.status == 'completed' and item.has_file %}
+                    <a class="table-button" href="{% url 'portal:request-download' item.pk %}">Download</a>
+                {% elif item.status == 'pending' or item.status == 'expired' %}
+                    <form method="post" action="{% url 'portal:request-resend' item.pk %}">{% csrf_token %}<button class="table-button {% if item.email_status == 'failed' %}table-button-warning{% endif %}" type="submit">Resend</button></form>
+                    <form method="post" action="{% url 'portal:request-cancel' item.pk %}" data-confirm="Cancel this request and invalidate its upload link?">{% csrf_token %}<button class="table-button table-button-danger" type="submit">Cancel</button></form>
+                {% else %}
+                    <span class="muted-dash">&mdash;</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">&#128196;</div><strong>No requests found</strong><span>Try another search or create a new document request.</span></div></td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Requests pagination">
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    <div>
+        {% if page_obj.has_previous %}<a href="?q={{ query|urlencode }}&status={{ status_filter|urlencode }}&page={{ page_obj.previous_page_number }}" data-page-link>&larr; Previous</a>{% else %}<span class="is-disabled">&larr; Previous</span>{% endif %}
+        {% if page_obj.has_next %}<a href="?q={{ query|urlencode }}&status={{ status_filter|urlencode }}&page={{ page_obj.next_page_number }}" data-page-link>Next &rarr;</a>{% else %}<span class="is-disabled">Next &rarr;</span>{% endif %}
+    </div>
+</nav>
+{% endif %}

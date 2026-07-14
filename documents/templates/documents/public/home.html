@@ -1,0 +1,29 @@
+{% extends 'documents/base.html' %}
+{% block title %}Secure Document Portal | {{ brand_short_name }}{% endblock %}
+{% block body_class %}site-body public-shell{% endblock %}
+{% block body %}
+<header class="public-header">
+    {% include 'documents/public/_brand.html' %}
+    <span class="secure-pill"><span class="secure-dot"></span> Secure document service</span>
+</header>
+<main class="public-main">
+    <section class="public-card public-card-home">
+        <div class="eyebrow">Document submission</div>
+        <h1>A secure place for your requested documents.</h1>
+        <p class="lead">Open the private link sent to your email by our admissions team. Each upload link is personal, expires automatically, and can only be used once.</p>
+        <div class="info-panel">
+            <span class="info-icon" aria-hidden="true">i</span>
+            <p>There is no public upload form on this page. Please use the yellow <strong>Upload requested document</strong> button in your BUEC email.</p>
+        </div>
+        <div class="trust-grid">
+            <div><strong>Encrypted storage</strong><span>Your file is encrypted before it is stored.</span></div>
+            <div><strong>Single-use link</strong><span>The upload link closes after a successful submission.</span></div>
+            <div><strong>Private access</strong><span>Only authorised BUEC portal users can download it.</span></div>
+        </div>
+    </section>
+</main>
+<footer class="public-footer">
+    <span>&copy; {% now 'Y' %} {{ brand_name }}</span>
+    <span>Need help? <a href="mailto:{{ support_email }}">{{ support_email }}</a></span>
+</footer>
+{% endblock %}

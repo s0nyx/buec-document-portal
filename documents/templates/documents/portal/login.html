@@ -1,0 +1,48 @@
+{% extends 'documents/base.html' %}
+{% block title %}Portal sign in | {{ brand_short_name }}{% endblock %}
+{% block body_class %}site-body login-shell{% endblock %}
+{% block body %}
+<main class="login-layout">
+    <section class="login-brand-panel">
+        <div class="login-brand-content">
+            <div class="brand-lockup brand-lockup-inverse">
+                <span class="brand-mark">B</span>
+                <span class="brand-copy"><strong>{{ brand_short_name }}</strong><small>British University<br>Educational Consultancy</small></span>
+            </div>
+            <div class="login-brand-message">
+                <span class="eyebrow eyebrow-gold">Internal document operations</span>
+                <h1>Securely request, receive and review student documents.</h1>
+                <p>Private staff access. Every request and document action is recorded in the audit log.</p>
+            </div>
+            <div class="login-security-note"><span class="secure-dot"></span> Protected session &middot; restricted access</div>
+        </div>
+    </section>
+    <section class="login-form-panel">
+        <div class="login-box">
+            <div class="login-mobile-brand"><span class="brand-mark">B</span><strong>{{ brand_short_name }}</strong></div>
+            <span class="eyebrow">Welcome back</span>
+            <h2>Sign in to the portal</h2>
+            <p>Use your authorised superuser account.</p>
+            <form method="post" class="stack-form" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% if form.non_field_errors %}
+                    <div class="form-alert" role="alert">{{ form.non_field_errors|striptags }}</div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<div class="field-error">{{ form.username.errors|striptags }}</div>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}<div class="field-error">{{ form.password.errors|striptags }}</div>{% endif %}
+                </div>
+                <button class="button button-primary button-full" type="submit"><span>Sign in securely</span><span aria-hidden="true">&#8594;</span></button>
+            </form>
+            <p class="login-help">Account access is managed internally. Contact the system owner if your credentials are unavailable.</p>
+        </div>
+    </section>
+</main>
+{% endblock %}

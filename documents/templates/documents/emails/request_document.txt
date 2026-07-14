@@ -1,0 +1,15 @@
+Dear {{ request_item.student_name }},
+
+To continue processing your application, {{ brand_name }} needs the following document:
+
+{{ document_label }}
+
+Upload it securely using this personal link:
+{{ upload_url }}
+
+The link can be used once and expires on {{ expiry|date:'j F Y, H:i T' }}.
+
+Please do not forward this link. If you need help, contact {{ support_email }}{% if support_phone %} or {{ support_phone }}{% endif %}.
+
+Kind regards,
+{{ brand_short_name }} Document Team

@@ -1,0 +1,26 @@
+{% extends 'documents/base.html' %}
+{% block title %}No action required | {{ brand_short_name }}{% endblock %}
+{% block body_class %}site-body public-shell centered-shell{% endblock %}
+{% block body %}
+<header class="public-header">
+    {% include 'documents/public/_brand.html' %}
+    <span class="secure-pill"><span class="secure-dot"></span> Secure document service</span>
+</header>
+<main class="public-main centered-main">
+    <section class="public-card result-card">
+        <div class="result-icon neutral-icon" aria-hidden="true">&#10003;</div>
+        <div class="eyebrow">Nothing to do here</div>
+        <h1>This upload link is no longer active.</h1>
+        <p class="lead">The document may already have been submitted, the request may have expired, or the link may have been replaced.</p>
+        <div class="info-panel">
+            <span class="info-icon" aria-hidden="true">i</span>
+            <p>Please check your inbox for a newer BUEC email. Contact us if you still need help.</p>
+        </div>
+        <a class="button button-secondary" href="mailto:{{ support_email }}">Contact BUEC support</a>
+    </section>
+</main>
+<footer class="public-footer">
+    <span>&copy; {% now 'Y' %} {{ brand_name }}</span>
+    <span><a href="mailto:{{ support_email }}">{{ support_email }}</a></span>
+</footer>
+{% endblock %}

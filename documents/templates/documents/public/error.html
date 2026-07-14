@@ -1,0 +1,17 @@
+{% extends 'documents/base.html' %}
+{% block title %}Error {{ error_code }} | {{ brand_short_name }}{% endblock %}
+{% block body_class %}site-body public-shell centered-shell{% endblock %}
+{% block body %}
+<header class="public-header">
+    {% include 'documents/public/_brand.html' %}
+</header>
+<main class="public-main centered-main">
+    <section class="public-card result-card">
+        <div class="result-icon neutral-icon" aria-hidden="true">!</div>
+        <div class="eyebrow">Error {{ error_code }}</div>
+        <h1>We could not complete that request.</h1>
+        <p class="lead">Please return to the secure link in your email or contact our team for assistance.</p>
+        <a class="button button-secondary" href="mailto:{{ support_email }}">Contact support</a>
+    </section>
+</main>
+{% endblock %}
