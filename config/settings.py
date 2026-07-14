@@ -39,7 +39,7 @@ if not SECRET_KEY:
         )
 
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "buec-document-portal.onrender.com,127.0.0.1")
-CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS", "https://buec-document-portal.onrender.com")
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000").rstrip("/")
 
 ADMIN_PORTAL_SLUG = os.getenv("ADMIN_PORTAL_SLUG", "admin").strip().strip("/")
